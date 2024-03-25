@@ -1,0 +1,46 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Siswa</title>
+</head>
+<body>
+    <h1>Data Siswa</h1>
+    <form action="/update:id" method="POST">
+        <h3>Ubah Data</h3>
+        <table>
+            <tr>
+                <td><label for="nama">Nama Siswa</label></td>
+                <td><input type="text" name="nama" id="nama"></td>
+            </tr>
+            <tr>
+                <td><label for="kota">Kota/Kabupaten</label></td>
+                <td><select name="kota" id="kota">
+                    <option disabled selected value> -- Kota/Kabupaten -- </option>
+                    <% if (kotaData.length !== 0) { %>
+                        <% kotaData.forEach(function(data, index) { %>
+                            <option value='<%= data.idkota %>'><%= data.namaKota %></option>
+                        <% });} %>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="kec">Kecamatan</label></td>
+                <td><select name="kec" id="kec">
+                    <option disabled selected value> -- Kecamatan -- </option>
+                    <% if (kecData.length !== 0) { %>
+                        <% kecData.forEach(function(data, index) { %>
+                            <option value='<%= data.idkec %>'><%= data.namaKec %></option>
+                        <% });} %>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="alamat">Alamat</label></td>
+                <td><textarea name="alamat" id="alamat" cols="21" rows="5"></textarea>
+            </tr>
+            <tr><td colspan="2"><button type="submit">Tambahkan Data</button></td></tr>
+        </table>
+    </form>
+</body>
+<script>
+</script>
+</html>

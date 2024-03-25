@@ -1,0 +1,73 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Siswa</title>
+</head>
+<body>
+    <h1>Data Siswa</h1>
+    <form action="/add" method="POST">
+        <h3>Tambahkan Data Baru</h3>
+        <table>
+            <tr>
+                <td><label for="nama">Nama Siswa</label></td>
+                <td><input type="text" name="nama" id="nama"></td>
+            </tr>
+            <tr>
+                <td><label for="kota">Kota/Kabupaten</label></td>
+                <td><select name="kota" id="kota">
+                    <option disabled selected value> -- Kota/Kabupaten -- </option>
+                    <% if (kotaData.length !== 0) { %>
+                        <% kotaData.forEach(function(data, index) { %>
+                            <option value='<%= data.idkota %>'><%= data.namaKota %></option>
+                        <% });} %>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="kec">Kecamatan</label></td>
+                <td><select name="kec" id="kec">
+                    <option disabled selected value> -- Kecamatan -- </option>
+                    <% if (kecData.length !== 0) { %>
+                        <% kecData.forEach(function(data, index) { %>
+                            <option value='<%= data.idkec %>'><%= data.namaKec %></option>
+                        <% });} %>
+                </select></td>
+            </tr>
+            <tr>
+                <td><label for="alamat">Alamat</label></td>
+                <td><textarea name="alamat" id="alamat" cols="21" rows="5"></textarea>
+            </tr>
+            <tr><td colspan="2"><button type="submit">Tambahkan Data</button></td></tr>
+        </table>
+    </form>
+    <table>
+        <tr>
+            <th>ID Siswa</th>
+            <th>Nama Siswa</th>
+            <th>Kota/Kabupaten</th>
+            <th>Kecamatan</th>
+            <th>Alamat</th>
+            <th colspan="2">Lainnya</th>
+        </tr>
+        <% if (userData.length !== 0) { %>
+            <% userData.forEach(function(data, index) { %>
+                <tr>
+                    <td><%= data.idSiswa %></td>
+                    <td> <a href="/:<%= data.idSiswa %>"><%= data.nama %></a></td>
+                    <td><%= data.namaKota %></td>
+                    <td><%= data.namaKec %></td>
+                    <td><%= data.alamat %></td>
+                    <td><a href="/update:<%= data.idSiswa %>">Ubah</a></td>
+                    <td><a href="/delete:<%= data.idSiswa %>">Delete</a></td>
+                </tr>
+            <% }); %>
+            <% } else { %>
+                <tr>
+                    <td colspan="7">No Data Found</td>
+                </tr>
+            <% } %>
+    </table>
+</body>
+<script>
+</script>
+</html>
