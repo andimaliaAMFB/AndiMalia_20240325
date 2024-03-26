@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -6,5 +7,119 @@
 </head>
 <body>
     <h1>Data Siswa</h1>
+    <!-- Form Input -->
+    <form action="/add" method="POST">
+        <!-- input nama -->
+        <div>
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" name="nama" id="nama">
+        </div>
+        <!-- input kota -->
+        <div>
+            <label for="kotaBar">Kota/Kabupaten</label>
+            <div class="selectBar" name="kotaBar" id="kotaBar">
+                <div class="selectInput">
+                    <input type="text" name="kota" id="kota" class="inputBar">
+                    <button class="btn selectBtn" type="button">V</button>
+                </div>
+                <div class="selectOption dropdownMenu" style="display: none;">
+                    <ul class="selectOption-menu selected">A</ul>
+                    <ul class="selectOption-menu">B</ul>
+                    <ul class="selectOption-menu">C</ul>
+                </div>
+            </div>
+        </div>
+        <!-- input kecamatan -->
+        <div>
+            <label for="kecBar">Kecamatan</label>
+            <div class="selectBar triggered" name="kecBar" id="kecBar">
+                <div class="selectInput">
+                    <input type="text" name="kec" id="kec" class="inputBar kotaTrigger" disabled>
+                    <button class="btn selectBtn" type="button" disabled>V</button>
+                </div>
+                <div class="selectOption dropdownMenu" style="display: none;">
+                </div>
+            </div>
+        </div>
+        <!-- input alamat -->
+        <div>
+            <label for="alamat">Alamat</label>
+            <textarea name="alamat" id="alamat" cols="30" rows="10"></textarea>
+        </div>
+        <!-- submit form -->
+        <div>
+            <button type="submit">Tambahkan Data Siswa</button>
+        </div>
+    </form>
+    <!-- Tabel Seluruh Data -->
+    <Table>
+        <tr>
+            <th>Id Siswa</th>
+            <th>Nama Lengkap</th>
+            <th>Kota/Kabupaten</th>
+            <th>Kecamatan</th>
+            <th>Lainnya</th>
+        </tr>
+        <tr>
+            <td>Id Siswa</td>
+            <td><a href="/idSiswa">Nama Lengkap</a></td>
+            <td>Kota/Kabupaten</td>
+            <td>Kecamatan</td>
+            <td>
+                <a href="/edit" class="btn"></a>
+                <a href="/delete" class="btn btn-danger"></a>
+            </td>
+        </tr>
+    </Table>
+
+    <div class="hiddenData">
+        <table>
+            <tr>
+                <td>1</td>
+                <td>A</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>B</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>C</td>
+            </tr>
+        </table>
+        <table>
+            <tr>
+                <td>1</td>
+                <td>a</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>2</td>
+                <td>b</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>3</td>
+                <td>c</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>4</td>
+                <td>d</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>5</td>
+                <td>e</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>6</td>
+                <td>f</td>
+                <td>1</td>
+            </tr>
+        </table>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
