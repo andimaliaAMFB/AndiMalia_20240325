@@ -1,21 +1,18 @@
 const http = require('node:http');
-
+const path = require('path');
 const express = require('express');
 const mysql = require('mysql2');
+const bodyParser = require('body-parser');
 
 const app = express();
 const hostname = '127.0.0.1';
 const port = 3000;
 
-const path = require('path');
-const filePath = path.resolve(__dirname, 'index.html');
-
+app.use(bodyParser.urlencoded({extended: false}));//Parse application/xxx-www-url form encoded
+app.use(bodyParser.json());
 app.use(express.json());
-// app.get('/', (req, res) => {
-// //     res.sendFile(filePath);
-//     res.render('pages/index');
-// })
 app.set('view engine', 'ejs');
+app.use(express.static(path.join(__dirname,'public')));
 
 // Koneksi Database
 const db = mysql.createConnection({
@@ -34,25 +31,27 @@ db.connect((err) => {
 });
 
   // Get * Siswa
-  function getSiswa() {
+  function getSiswa(go2page) {
     app.get('/', (req, res) => {
-        const sql = 'SELECT idSiswa,nama,kota.namaKota,kecamatan.namaKec,alamat FROM (siswa INNER JOIN (kecamatan INNER JOIN kota)) WHERE siswa.kota = kota.idKota AND siswa.kecamatan = kecamatan.idKec ORDER BY idSiswa'
-        db.query(sql, (err, dataSiswa) => {
-            if (err) throw err;
+      const sql = 'SELECT idSiswa,nama,kota.namaKota,kecamatan.namaKec,alamat FROM (siswa INNER JOIN (kecamatan INNER JOIN kota)) WHERE siswa.kota = kota.idKota AND siswa.kecamatan = kecamatan.idKec ORDER BY idSiswa'
+      db.query(sql, (err, dataSiswa) => {
+        if (err) throw err;
     
-            const sql2 = 'SELECT * FROM kecamatan ORDER BY idkec'
-            db.query(sql2, (err, kecamatan) => {
-                if (err) throw err;
+        const sql2 = 'SELECT * FROM kecamatan ORDER BY idkec'
+        db.query(sql2, (err, kecamatan) => {
+          if (err) throw err;
                 
-                const sql3 = 'SELECT * FROM kota ORDER BY idkota'
-                db.query(sql3, (err, kota) => {
-                    if (err) throw err;
-                    res.render('pages/index',{ title: 'User List', userData: dataSiswa, kecData: kecamatan, kotaData: kota});
-                });
-            });
+          const sql3 = 'SELECT * FROM kota ORDER BY idkota'
+          db.query(sql3, (err, kota) => {
+            if (err) throw err;
+            if (go2page == "index") {
+              res.render('pages/index',{ title: 'User List', userData: dataSiswa, kecData: kecamatan, kotaData: kota});
+              console.log("Back to Index");
+            }
+          });
         });
-        
       });
+    });
   }
   app.get('/', (req, res) => {
     const sql = 'SELECT idSiswa,nama,kota.namaKota,kecamatan.namaKec,alamat FROM (siswa INNER JOIN (kecamatan INNER JOIN kota)) WHERE siswa.kota = kota.idKota AND siswa.kecamatan = kecamatan.idKec ORDER BY idSiswa'
@@ -77,32 +76,72 @@ db.connect((err) => {
   app.get('/:id', (req, res) => {
     const sql = 'SELECT idSiswa,nama,kota.namaKota,kecamatan.namaKec,alamat FROM (siswa INNER JOIN (kecamatan INNER JOIN kota)) WHERE siswa.kota = kota.idKota AND siswa.kecamatan = kecamatan.idKec AND idSiswa = ?'
     const { id } = req.params;
-    db.query(sql, [id], (err, results) => {
+    db.query(sql, [id], (err, dataSiswa) => {
       if (err) throw err;
-      res.json(results[0]);
+      const sql2 = 'SELECT * FROM kecamatan ORDER BY idkec'
+      db.query(sql2, (err, kecamatan) => {
+          if (err) throw err;
+          
+          const sql3 = 'SELECT * FROM kota ORDER BY idkota'
+          db.query(sql3, (err, kota) => {
+              if (err) throw err;
+              res.render('pages/siswa',{ title: 'User List', userData: dataSiswa, kecData: kecamatan, kotaData: kota});
+          });
+      });
     });
   });
   
   // Insert Siswa
   app.post('/add', (req, res) => {
-    const sql = 'INSERT INTO siswa (nama,kota,kecamatan,alamat) VALUES (?,?,?,?)'
     const { nama,kota,kec,alamat } = req.body;
-    db.query(sql, [nama,kota,kec,alamat], (err, result) => {
-      res.json({ message: 'Data Berhasil Ditambahkan'});
-      console.log("Data Berhasil Ditambahkan");
-      getSiswa();
+    var kotaKab;
+    var kecamatan;
+    // ubah nama kota dan nama kecamatan menjadi idnya
+    const sql2 = 'SELECT * FROM kecamatan ORDER BY idkec';
+    db.query(sql2, (err, data) => {
+        if (err) throw err;
+        data.forEach(list => {
+          if (list[Object.keys(list)[1]] == kec) {
+            kecamatan = list[Object.keys(list)[0]];
+            kotaKab = list[Object.keys(list)[2]];
+            console.log(nama,kotaKab,kecamatan,alamat);
+            const sql = 'INSERT INTO siswa (nama,kota,kecamatan,alamat) VALUES (?,?,?,?)';
+            db.query(sql, [nama,kotaKab,kecamatan,alamat], (err, result) => {
+              if (err) throw err;
+              console.log("Data Berhasil Ditambahkan");
+            });
+          }
+        });
     });
+    res.redirect('back');
+    console.log("Back to Index");
   });
   
   // Update Siswa
   app.put('/update:id', (req, res) => {
-    const sql = 'UPDATE siswa SET nama = ?, kota = ?, kecamatan = ?, alamat = ? WHERE id = ?'
     const { id } = req.params;
     const { nama,kota,kec,alamat } = req.body;
-    db.query(sql, [nama,kota,kec,alamat, id], (err) => {
-      if (err) throw err;
-      res.json({ message: 'Data Siswa Berhasil Diperbaharui' });
+    var kotaKab;
+    var kecamatan;
+    // ubah nama kota dan nama kecamatan menjadi idnya
+    const sql2 = 'SELECT * FROM kecamatan ORDER BY idkec';
+    db.query(sql2, (err, data) => {
+        if (err) throw err;
+        data.forEach(list => {
+          if (list[Object.keys(list)[1]] == kec) {
+            kecamatan = list[Object.keys(list)[0]];
+            kotaKab = list[Object.keys(list)[2]];
+            console.log(nama,kotaKab,kecamatan,alamat);
+            const sql = 'UPDATE siswa SET nama = ?, kota = ?, kecamatan = ?, alamat = ? WHERE id = ?';
+            db.query(sql, [nama,kotaKab,kecamatan,alamat], (err, result) => {
+              if (err) throw err;
+              console.log("Data Berhasil Diperbaharui");
+            });
+          }
+        });
     });
+    res.redirect('back');
+    console.log("Back to Index");
   });
   
   // Delete Siswa

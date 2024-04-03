@@ -1,0 +1,59 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Data Siswa</title>
+</head>
+<body>
+    <h1>Data Siswa</h1>
+    <!-- Form Input -->
+    <form action="/update:id" method="POST">
+        <!-- input nama -->
+        <div>
+            <label for="nama">Nama Lengkap</label>
+            <input type="text" name="nama" id="nama">
+        </div>
+        <!-- input kota -->
+        <div>
+            <div class="selectBar" name="kotaBar" id="kotaBar">
+                <div class="selectInput">
+                    <label for="kota">Kota/Kabupaten</label>
+                    <input type="text" name="kota" id="kota" class="inputBar" value="<%= dataSiswa[namaKota]%>">
+                    <button class="btn selectBtn" type="button">V</button>
+                </div>
+                <div class="selectOption dropdownMenu" style="display: none;">
+                    <% if (kotaData.length !== 0) { %>
+                        <% kotaData.forEach(function(data, index) { %>
+                            <% const arr = Object.keys(data).map((key) => [data[key]]) %>
+                            <ul class="selectOption-menu"><%= arr[1] %></ul>
+                        <% }); %>
+                    <% } %>
+                </div>
+            </div>
+        </div>
+        <!-- input kecamatan -->
+        <div>
+            <div class="selectBar triggered" name="kecBar" id="kecBar">
+                <div class="selectInput">
+                    <label for="kec">Kecamatan</label>
+                    <input type="text" name="kec" id="kec" class="inputBar kotaTrigger" disabled>
+                    <button class="btn selectBtn" type="button" disabled>V</button>
+                </div>
+                <div class="selectOption dropdownMenu" style="display: none;">
+                </div>
+            </div>
+        </div>
+        <!-- input alamat -->
+        <div>
+            <label for="alamat">Alamat</label>
+            <textarea name="alamat" id="alamat" cols="30" rows="10"></textarea>
+        </div>
+        <!-- submit form -->
+        <div>
+            <button type="submit" value="accept">Tambahkan Data Siswa</button>
+        </div>
+    </form>
+</body>
+<script>
+</script>
+</html>

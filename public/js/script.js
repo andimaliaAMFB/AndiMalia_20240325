@@ -48,21 +48,24 @@ window.addEventListener('mouseup', function(event){
                             if (option.classList.contains("selected")) {
                                 option.classList.remove("selected");
                             }
-                            event.target.classList.add("selected");
-                        }
-                        bar.querySelector(`input`).value = event.target.textContent;
-                        let barName = bar.id.substring(0,bar.id.length-3);
-                        if (barName == "kota") {
-                            var newData = renderMenu(event.target.textContent,Data[0],Data[1]);
-                            console.log(event.target.textContent,Data[0],Data[1],newData);
-                            var effectedSuggestion = document.querySelector(`#kecBar .selectOption`);
-                            var newInner = "";
-                            newData.forEach(text => {
-                                newInner += `<ul class="selectOption-menu">` + text + `</ul>`;
-                            });
-                            effectedSuggestion.innerHTML = newInner;
-                            document.querySelector(`#kecBar .selectInput input`).disabled = false;
-                            document.querySelector(`#kecBar .selectInput button`).disabled = false;
+                            if (option == event.target) {
+                                event.target.classList.add("selected");
+                                bar.querySelector(`input`).value = event.target.textContent;
+                                let barName = bar.id.substring(0,bar.id.length-3);
+                                if (barName == "kota") {
+                                    var newData = renderMenu(event.target.textContent,Data[0],Data[1]);
+                                    var effectedSuggestion = document.querySelector(`#kecBar .selectOption`);
+                                    var newInner = "";
+                                    newData.forEach(text => {
+                                        newInner += `<ul class="selectOption-menu">` + text + `</ul>`;
+                                    });
+                                    effectedSuggestion.innerHTML = newInner;
+                                    document.querySelector(`#kecBar .selectInput input`).disabled = false;
+                                    document.querySelector(`#kecBar .selectInput button`).disabled = false;
+                                }
+                                // refresh all dropdown menu
+                                selectOption = document.querySelectorAll(`.selectBar .selectOption-menu`);
+                            }
                         }
                     });
                 }
